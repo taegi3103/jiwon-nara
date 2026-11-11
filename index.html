@@ -1,17 +1,424 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>지원나라 - 정부 지원금 및 정책 정보</title>
-    <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; text-align: center; padding-top: 100px; background: #f9fafb; color: #111; }
-        h1 { font-size: 2.5rem; margin-bottom: 10px; color: #2563eb; }
-        p { color: #666; font-size: 1.1rem; }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="정부 지원금과 정책 정보를 이해하기 쉽게 정리하는 지원나라">
+  <meta name="theme-color" content="#f7f8f4">
+  <title>지원나라 | 내게 필요한 정책을 더 쉽게</title>
+  <style>
+    :root {
+      --ink: #15251f;
+      --muted: #68736e;
+      --paper: #f7f8f4;
+      --surface: #ffffff;
+      --line: #dfe5e0;
+      --green: #176b4d;
+      --green-dark: #0f513a;
+      --green-soft: #dff0e7;
+      --lime: #dff36b;
+      --sand: #f2eee1;
+      --shadow: 0 24px 70px rgba(21, 37, 31, 0.10);
+      --radius: 24px;
+      --max: 1180px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Inter, "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    .wrap { width: min(calc(100% - 40px), var(--max)); margin-inline: auto; }
+    .eyebrow {
+      margin: 0 0 18px;
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid rgba(223, 229, 224, .85);
+      background: rgba(247, 248, 244, .88);
+      backdrop-filter: blur(16px);
+    }
+    .nav {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .brand { display: inline-flex; align-items: center; gap: 11px; font-size: 20px; font-weight: 850; letter-spacing: -.04em; }
+    .brand-mark {
+      width: 35px;
+      height: 35px;
+      display: grid;
+      place-items: center;
+      border-radius: 11px;
+      color: white;
+      background: var(--green);
+      box-shadow: inset 0 -4px 10px rgba(0,0,0,.14);
+    }
+    .brand-mark svg { width: 21px; height: 21px; }
+    .nav-links { display: flex; align-items: center; gap: 30px; color: #52605a; font-size: 14px; font-weight: 700; }
+    .nav-links a:hover, .nav-links a:focus-visible { color: var(--green); }
+    .nav-cta {
+      padding: 11px 17px;
+      border-radius: 999px;
+      color: white !important;
+      background: var(--ink);
+    }
+
+    .hero { padding: 68px 0 34px; }
+    .hero-panel {
+      position: relative;
+      min-height: 540px;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1.12fr .88fr;
+      border-radius: 34px;
+      background: var(--green);
+      box-shadow: var(--shadow);
+    }
+    .hero-copy { position: relative; z-index: 2; padding: clamp(48px, 7vw, 88px); color: white; }
+    .hero-copy .eyebrow { color: var(--lime); }
+    h1 {
+      max-width: 690px;
+      margin: 0;
+      font-size: clamp(44px, 6.3vw, 80px);
+      line-height: 1.04;
+      letter-spacing: -.065em;
+      font-weight: 820;
+      text-wrap: balance;
+    }
+    .hero-lead {
+      max-width: 570px;
+      margin: 26px 0 32px;
+      color: rgba(255,255,255,.78);
+      font-size: clamp(17px, 2vw, 20px);
+      line-height: 1.75;
+      word-break: keep-all;
+    }
+    .search {
+      max-width: 610px;
+      display: flex;
+      gap: 10px;
+      padding: 8px;
+      border-radius: 18px;
+      background: white;
+      box-shadow: 0 18px 40px rgba(0, 34, 23, .25);
+    }
+    .search label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+    .search input {
+      min-width: 0;
+      flex: 1;
+      padding: 0 8px 0 15px;
+      border: 0;
+      outline: 0;
+      color: var(--ink);
+      background: transparent;
+    }
+    .search input::placeholder { color: #909b96; }
+    .search button {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 20px;
+      border: 0;
+      border-radius: 12px;
+      color: var(--ink);
+      background: var(--lime);
+      font-weight: 800;
+    }
+    .search button svg { width: 18px; height: 18px; }
+    .hero-note { margin: 18px 0 0; color: rgba(255,255,255,.6); font-size: 13px; }
+    .hero-art { position: relative; min-height: 470px; }
+    .orb { position: absolute; border-radius: 50%; }
+    .orb-one { width: 390px; height: 390px; top: 54px; right: 54px; background: var(--lime); }
+    .orb-two { width: 300px; height: 300px; right: -70px; bottom: -80px; background: #8dd2ae; opacity: .9; }
+    .orb-three { width: 130px; height: 130px; top: -35px; right: -20px; background: #f3c78d; }
+    .info-card {
+      position: absolute;
+      z-index: 2;
+      width: 272px;
+      padding: 24px;
+      border: 1px solid rgba(255,255,255,.65);
+      border-radius: 22px;
+      background: rgba(255,255,255,.88);
+      box-shadow: 0 24px 55px rgba(11, 50, 36, .2);
+      backdrop-filter: blur(12px);
+    }
+    .info-card.top { top: 94px; right: 128px; transform: rotate(4deg); }
+    .info-card.bottom { right: 58px; bottom: 72px; transform: rotate(-4deg); }
+    .info-icon { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 13px; color: var(--green); background: var(--green-soft); }
+    .info-icon svg { width: 22px; height: 22px; }
+    .info-card strong { display: block; margin: 18px 0 7px; font-size: 18px; letter-spacing: -.03em; }
+    .info-card span { color: var(--muted); font-size: 14px; line-height: 1.55; }
+
+    .quick { padding: 42px 0 98px; }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 30px; }
+    .section-head h2, .trust-copy h2 { margin: 0; font-size: clamp(30px, 4vw, 46px); line-height: 1.16; letter-spacing: -.055em; }
+    .section-head p { max-width: 430px; margin: 0; color: var(--muted); line-height: 1.7; word-break: keep-all; }
+    .category-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .category {
+      min-height: 190px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+    .category:hover, .category:focus-visible { transform: translateY(-5px); border-color: #a7c7b6; box-shadow: 0 18px 45px rgba(21,37,31,.08); outline: 0; }
+    .category-icon { width: 48px; height: 48px; display: grid; place-items: center; border-radius: 15px; background: var(--sand); }
+    .category-icon svg { width: 24px; height: 24px; }
+    .category-footer { display: flex; align-items: end; justify-content: space-between; gap: 12px; }
+    .category h3 { margin: 0 0 6px; font-size: 21px; letter-spacing: -.035em; }
+    .category p { margin: 0; color: var(--muted); font-size: 14px; }
+    .arrow { font-size: 22px; color: var(--green); }
+
+    .latest { padding: 96px 0; background: var(--surface); }
+    .latest-shell { display: grid; grid-template-columns: 1fr 1.5fr; gap: 54px; align-items: start; }
+    .latest-intro { position: sticky; top: 118px; }
+    .latest-intro h2 { margin: 0 0 18px; font-size: clamp(32px, 4.2vw, 50px); line-height: 1.12; letter-spacing: -.055em; }
+    .latest-intro p { max-width: 390px; margin: 0; color: var(--muted); line-height: 1.8; word-break: keep-all; }
+    .status-pill { display: inline-flex; align-items: center; gap: 8px; margin-top: 26px; padding: 9px 13px; border-radius: 999px; color: var(--green-dark); background: var(--green-soft); font-size: 13px; font-weight: 800; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #32a271; box-shadow: 0 0 0 5px rgba(50,162,113,.12); }
+    .empty-feed {
+      min-height: 385px;
+      display: grid;
+      place-items: center;
+      padding: 44px;
+      border: 1px dashed #c9d5ce;
+      border-radius: 30px;
+      background: linear-gradient(145deg, #fbfcfa, #f0f4ef);
+      text-align: center;
+    }
+    .empty-symbol { width: 72px; height: 72px; display: grid; place-items: center; margin: 0 auto 22px; border-radius: 22px; color: var(--green); background: white; box-shadow: 0 14px 30px rgba(21,37,31,.08); }
+    .empty-symbol svg { width: 32px; height: 32px; }
+    .empty-feed h3 { margin: 0 0 10px; font-size: 24px; letter-spacing: -.04em; }
+    .empty-feed p { max-width: 430px; margin: 0; color: var(--muted); line-height: 1.75; word-break: keep-all; }
+
+    .trust { padding: 108px 0; }
+    .trust-panel { display: grid; grid-template-columns: .9fr 1.1fr; gap: 68px; padding: clamp(40px, 6vw, 72px); border-radius: 32px; background: var(--sand); }
+    .trust-copy p { margin: 22px 0 0; color: var(--muted); line-height: 1.8; word-break: keep-all; }
+    .principles { display: grid; gap: 14px; }
+    .principle { display: grid; grid-template-columns: 42px 1fr; gap: 16px; padding: 20px; border-radius: 18px; background: rgba(255,255,255,.7); }
+    .principle-index { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 50%; color: white; background: var(--green); font-weight: 800; }
+    .principle h3 { margin: 2px 0 6px; font-size: 17px; }
+    .principle p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.6; word-break: keep-all; }
+
+    .site-footer { padding: 34px 0 44px; border-top: 1px solid var(--line); }
+    .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .footer-copy { margin: 0; color: var(--muted); font-size: 13px; }
+    .footer-links { display: flex; gap: 22px; color: var(--muted); font-size: 13px; font-weight: 700; }
+    .search-message { min-height: 24px; margin: 14px 0 0; color: var(--lime); font-size: 14px; font-weight: 700; }
+
+    @media (max-width: 900px) {
+      .nav-links a:not(.nav-cta) { display: none; }
+      .hero-panel { grid-template-columns: 1fr; }
+      .hero-art { min-height: 350px; }
+      .info-card.top { top: 30px; left: 10%; right: auto; }
+      .info-card.bottom { right: 9%; bottom: 32px; }
+      .orb-one { width: 330px; height: 330px; top: 10px; right: 12%; }
+      .category-grid { grid-template-columns: repeat(2, 1fr); }
+      .latest-shell, .trust-panel { grid-template-columns: 1fr; }
+      .latest-intro { position: static; }
+    }
+
+    @media (max-width: 620px) {
+      .wrap { width: min(calc(100% - 24px), var(--max)); }
+      .nav { min-height: 68px; }
+      .nav-cta { padding: 10px 14px; }
+      .hero { padding-top: 24px; }
+      .hero-panel { min-height: 0; border-radius: 24px; }
+      .hero-copy { padding: 42px 24px; }
+      h1 { font-size: clamp(42px, 14vw, 60px); }
+      .search { display: grid; }
+      .search input { min-height: 50px; }
+      .search button { justify-content: center; }
+      .hero-art { display: none; }
+      .quick { padding: 70px 0; }
+      .section-head { align-items: start; flex-direction: column; }
+      .category-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .category { min-height: 168px; padding: 18px; }
+      .category h3 { font-size: 18px; }
+      .category p { display: none; }
+      .latest { padding: 72px 0; }
+      .latest-shell { gap: 32px; }
+      .empty-feed { min-height: 330px; padding: 30px 22px; }
+      .trust { padding: 72px 0; }
+      .trust-panel { gap: 38px; padding: 32px 22px; border-radius: 24px; }
+      .principle { grid-template-columns: 36px 1fr; padding: 16px; }
+      .principle-index { width: 36px; height: 36px; }
+      .footer-inner { align-items: flex-start; flex-direction: column; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: .01ms !important; }
+    }
+  </style>
 </head>
 <body>
-    <h1>지원나라 (jiwonara.com)</h1>
-    <p>정부 지원금 및 정책 정보 전문 블로그 준비 중입니다.</p>
+  <header class="site-header">
+    <div class="wrap nav">
+      <a class="brand" href="#top" aria-label="지원나라 홈">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M6 12.5 10 16l8-9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2.8a9.2 9.2 0 1 0 9.2 9.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </span>
+        지원나라
+      </a>
+      <nav class="nav-links" aria-label="주요 메뉴">
+        <a href="#categories">정책 찾기</a>
+        <a href="#latest">최신 정보</a>
+        <a href="#principles">검증 원칙</a>
+        <a class="nav-cta" href="#latest">새 글 보기</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap hero-panel">
+        <div class="hero-copy">
+          <p class="eyebrow">Policy made clear</p>
+          <h1>내게 필요한 지원,<br>쉽고 정확하게.</h1>
+          <p class="hero-lead">복잡한 정부 지원금과 정책 정보를 대상, 혜택, 신청 방법 중심으로 정리해 드립니다.</p>
+          <form class="search" id="policy-search">
+            <label for="search-input">정책 검색</label>
+            <input id="search-input" type="search" placeholder="청년, 주거, 소상공인 등을 검색해 보세요" autocomplete="off">
+            <button type="submit">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="2"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              검색
+            </button>
+          </form>
+          <p class="search-message" id="search-message" aria-live="polite"></p>
+          <p class="hero-note">정책 콘텐츠 자동 수집·검증 시스템을 준비하고 있습니다.</p>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <span class="orb orb-one"></span><span class="orb orb-two"></span><span class="orb orb-three"></span>
+          <div class="info-card top">
+            <span class="info-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M5 4h14v16H5z" stroke="currentColor" stroke-width="1.8"/><path d="M8 8h8M8 12h8M8 16h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+            <strong>핵심만 한눈에</strong><span>지원 대상과 혜택을 먼저 확인하세요.</span>
+          </div>
+          <div class="info-card bottom">
+            <span class="info-icon"><svg viewBox="0 0 24 24" fill="none"><path d="m7 12 3 3 7-7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/></svg></span>
+            <strong>공식 출처 확인</strong><span>신청 전 최신 공고와 공식 링크를 확인하세요.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="quick" id="categories">
+      <div class="wrap">
+        <div class="section-head">
+          <div><p class="eyebrow">Explore by category</p><h2>대상별로 빠르게 찾기</h2></div>
+          <p>관심 분야를 선택하면 해당 정책과 지원 정보를 한곳에서 확인할 수 있도록 준비하고 있습니다.</p>
+        </div>
+        <div class="category-grid">
+          <a class="category" href="#latest" data-category="청년">
+            <span class="category-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.8"/><path d="M5.5 20c.4-4 2.7-6 6.5-6s6.1 2 6.5 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+            <span class="category-footer"><span><h3>청년</h3><p>취업·자산·생활 지원</p></span><span class="arrow">↗</span></span>
+          </a>
+          <a class="category" href="#latest" data-category="주거">
+            <span class="category-icon"><svg viewBox="0 0 24 24" fill="none"><path d="m3 11 9-7 9 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.5 10v10h13V10M10 20v-6h4v6" stroke="currentColor" stroke-width="1.8"/></svg></span>
+            <span class="category-footer"><span><h3>주거</h3><p>월세·전세·내 집 마련</p></span><span class="arrow">↗</span></span>
+          </a>
+          <a class="category" href="#latest" data-category="소상공인">
+            <span class="category-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M4 9h16l-1.5-5h-13zM5 9v11h14V9" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 20v-6h6v6" stroke="currentColor" stroke-width="1.8"/></svg></span>
+            <span class="category-footer"><span><h3>소상공인</h3><p>창업·경영·정책자금</p></span><span class="arrow">↗</span></span>
+          </a>
+          <a class="category" href="#latest" data-category="복지">
+            <span class="category-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.7A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>
+            <span class="category-footer"><span><h3>복지</h3><p>가족·건강·생활 안정</p></span><span class="arrow">↗</span></span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="latest" id="latest">
+      <div class="wrap latest-shell">
+        <div class="latest-intro">
+          <p class="eyebrow">Latest updates</p>
+          <h2>새로운 정책 정보를 준비 중입니다</h2>
+          <p>공식 기관 자료를 바탕으로 지원 대상, 지원 내용, 신청 기간과 방법을 확인하기 쉬운 형식으로 제공할 예정입니다.</p>
+          <span class="status-pill"><span class="status-dot"></span> 콘텐츠 시스템 준비 중</span>
+        </div>
+        <div class="empty-feed">
+          <div>
+            <span class="empty-symbol"><svg viewBox="0 0 24 24" fill="none"><path d="M6 3.5h9l3 3V20.5H6z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M15 3.5v3h3M9 11h6M9 15h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+            <h3>첫 번째 정책 글을 준비하고 있어요</h3>
+            <p>자동 수집과 검증 과정이 연결되면 이곳에 최신 정책 정보가 순서대로 표시됩니다.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="trust" id="principles">
+      <div class="wrap trust-panel">
+        <div class="trust-copy">
+          <p class="eyebrow">Editorial principles</p>
+          <h2>정보는 간결하게,<br>확인은 꼼꼼하게.</h2>
+          <p>지원나라는 방문자가 중요한 조건을 놓치지 않도록 명확한 정보 구조와 공식 출처 중심의 콘텐츠 원칙을 지향합니다.</p>
+        </div>
+        <div class="principles">
+          <article class="principle"><span class="principle-index">1</span><div><h3>핵심 조건 우선</h3><p>누가, 무엇을, 언제까지 신청할 수 있는지 먼저 정리합니다.</p></div></article>
+          <article class="principle"><span class="principle-index">2</span><div><h3>공식 출처 연결</h3><p>신청 전 확인할 수 있도록 담당 기관과 공식 안내 페이지를 연결합니다.</p></div></article>
+          <article class="principle"><span class="principle-index">3</span><div><h3>변경 사항 반영</h3><p>기간과 조건이 달라질 수 있는 정책은 최신 공고 기준으로 관리합니다.</p></div></article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M6 12.5 10 16l8-9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>지원나라</a>
+      <p class="footer-copy">지원 정책은 변경될 수 있으므로 신청 전 공식 기관의 최신 공고를 확인하세요.</p>
+      <div class="footer-links"><a href="#principles">콘텐츠 원칙</a><a href="mailto:hello@jiwonara.com">문의</a></div>
+    </div>
+  </footer>
+
+  <script>
+    const searchForm = document.querySelector('#policy-search');
+    const searchInput = document.querySelector('#search-input');
+    const searchMessage = document.querySelector('#search-message');
+    const categoryLinks = document.querySelectorAll('[data-category]');
+
+    function showPreparingMessage(term) {
+      searchMessage.textContent = term
+        ? '“' + term + '” 관련 정책 콘텐츠를 준비하고 있습니다.'
+        : '검색어를 입력해 주세요.';
+      if (term) document.querySelector('#latest').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    searchForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      showPreparingMessage(searchInput.value.trim());
+    });
+
+    categoryLinks.forEach((link) => {
+      link.addEventListener('click', () => {
+        const category = link.dataset.category;
+        searchInput.value = category;
+        searchMessage.textContent = category + ' 정책 콘텐츠를 준비하고 있습니다.';
+      });
+    });
+  </script>
 </body>
 </html>
